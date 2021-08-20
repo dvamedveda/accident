@@ -4,38 +4,39 @@
 <html>
 <head>
     <title>Accident</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
-          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
-          crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
             integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
             crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+            integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
             crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"
-            integrity="sha384-+YQ4JLhjyBLPDQt//I+STsc9iw4uQqACwlvpslubQzn4u2UU2UFM80nGisd026JF"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+            integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
             crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container pt-3">
+    <div class="container pt-3 px-3 mx-auto">
         <h3 class="text-center">
             Hello : Accident
         </h3>
-        <table class="table">
+        <table class="table table-sm table-striped">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Username</th>
+                    <th scope="col">ID инцидента</th>
+                    <th scope="col">Описание</th>
+                    <th scope="col">Сообщивший</th>
+                    <th scope="col">Место</th>
                 </tr>
             </thead>
             <tbody>
-                <c:set var="counter" value="${0}"/>
-                <c:forEach var="item" items="${requestScope['users']}">
-                    <c:set var="counter" value="${counter + 1}" />
+                <c:forEach var="accident" items="${requestScope['accidents']}">
                     <c:out value="<tr>" escapeXml="false" />
-                    <c:out value="<th scope='row'>${counter}</th>" escapeXml="false"/>
-                    <c:out value="<td>${item}</td>" escapeXml="false" />
+                    <c:out value="<th scope='row'>${accident.id}</th>" escapeXml="false"/>
+                    <c:out value="<td>${accident.text}</td>" escapeXml="false" />
+                    <c:out value="<td>${accident.name}</td>" escapeXml="false" />
+                    <c:out value="<td>${accident.address}</td>" escapeXml="false" />
                     <c:out value="</tr>" escapeXml="false" />
                 </c:forEach>
             </tbody>
