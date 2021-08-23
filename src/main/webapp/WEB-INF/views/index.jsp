@@ -21,6 +21,7 @@
         <h3 class="text-center">
             Hello : Accident
         </h3>
+        <a class="btn btn-primary" href="<c:url value='/create'/>">Добавить инцидент</a>
         <table class="table table-sm table-striped">
             <thead>
                 <tr>
@@ -28,6 +29,7 @@
                     <th scope="col">Описание</th>
                     <th scope="col">Сообщивший</th>
                     <th scope="col">Место</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +39,14 @@
                     <c:out value="<td>${accident.text}</td>" escapeXml="false" />
                     <c:out value="<td>${accident.name}</td>" escapeXml="false" />
                     <c:out value="<td>${accident.address}</td>" escapeXml="false" />
+                    <c:set var="editUrl" value="edit/${accident.id}"/>
+                    <c:out value="<td>
+                                    <a class=\"btn btn-outline-secondary\"
+                                    href=\"${editUrl}\">
+                                            Редактировать
+                                    </a>
+                                   </td>"
+                           escapeXml="false" />
                     <c:out value="</tr>" escapeXml="false" />
                 </c:forEach>
             </tbody>

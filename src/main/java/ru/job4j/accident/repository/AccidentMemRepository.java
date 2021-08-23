@@ -11,7 +11,15 @@ import java.util.*;
 @Repository
 public class AccidentMemRepository {
 
+    /**
+     * Хранилище инцидентов.
+     */
     private Map<Integer, Accident> store = new HashMap<>();
+
+    /**
+     * Счетчик идентификаторов инцидентов.
+     */
+    private int counter = 5;
 
     public AccidentMemRepository() {
         fillDummyAccidents();
@@ -54,5 +62,40 @@ public class AccidentMemRepository {
      */
     public Collection<Accident> getAllAccidents() {
         return store.values();
+    }
+
+    /**
+     * Создание нового инцидента в хранилище.
+     *
+     * @param accident объект нового инцидента.
+     * @return сохраненный инцидент.
+     */
+    public Accident createAccident(Accident accident) {
+        accident.setId(this.counter);
+        this.store.put(accident.getId(), accident);
+        this.counter++;
+        return accident;
+    }
+
+    /**
+     * Получение инцидента по его идентификатору.
+     *
+     * @param id идентификатор инцидента.
+     * @return объект инцидента.
+     */
+    public Accident getById(int id) {
+        return this.store.get(id);
+    }
+
+    /**
+     * Обновление существующего инцидента.
+     *
+     * @param accident объект инцидента.
+     */
+    public void updateAccident(Accident accident) {
+        if (this.store.containsKey(accident.getId())) {
+            this.store.remove(accident.getId());
+            this.store.put(accident.getId(), accident);
+        }
     }
 }
