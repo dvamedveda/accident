@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import ru.job4j.accident.entities.Accident;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Хранилище инцидентов, использующее для хранения память.
@@ -19,7 +20,7 @@ public class AccidentMemRepository {
     /**
      * Счетчик идентификаторов инцидентов.
      */
-    private int counter = 5;
+    private AtomicInteger counter = new AtomicInteger(4);
 
     public AccidentMemRepository() {
         fillDummyAccidents();
@@ -71,9 +72,8 @@ public class AccidentMemRepository {
      * @return сохраненный инцидент.
      */
     public Accident createAccident(Accident accident) {
-        accident.setId(this.counter);
+        accident.setId(this.counter.incrementAndGet());
         this.store.put(accident.getId(), accident);
-        this.counter++;
         return accident;
     }
 

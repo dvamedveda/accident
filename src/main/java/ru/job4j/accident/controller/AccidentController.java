@@ -74,10 +74,8 @@ public class AccidentController {
     public String editAccidentPage(HttpServletRequest request) {
         if (request.getAttribute("accident") != null) {
             return "accident/edit";
-        } else {
-            return "redirect:/";
         }
-
+        return "redirect:/";
     }
 
     /**
