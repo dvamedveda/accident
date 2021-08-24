@@ -2,12 +2,9 @@ package ru.job4j.accident.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.job4j.accident.entities.Accident;
-import ru.job4j.accident.repository.AccidentMemRepository;
+import ru.job4j.accident.service.AccidentService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -19,12 +16,12 @@ import javax.servlet.http.HttpServletRequest;
 public class AccidentController {
 
     /**
-     * Хранилище инцидентов.
+     * Сервис инцидентов.
      */
-    private final AccidentMemRepository repository;
+    private final AccidentService service;
 
-    public AccidentController(AccidentMemRepository repository) {
-        this.repository = repository;
+    public AccidentController(AccidentService service) {
+        this.service = service;
     }
 
     /**
@@ -45,7 +42,7 @@ public class AccidentController {
      */
     @PostMapping("/save")
     public String saveNewAccident(@ModelAttribute Accident accident) {
-        this.repository.createAccident(accident);
+        this.service.createNewAccident(accident);
         return "redirect:/";
     }
 
@@ -59,10 +56,26 @@ public class AccidentController {
      */
     @GetMapping("/edit/{accidentId}")
     public String attachAndForwardToEdit(Model model, @PathVariable("accidentId") int accidentId) {
-        Accident editAccident = this.repository.getById(accidentId);
+        Accident editAccident = this.service.getAccidentById(accidentId);
         model.addAttribute("accident", editAccident);
         return "forward:/edit";
     }
+
+
+    /**
+     * Запрос на редактирование инцидента (через параметр строки http-запроса)
+     * Здесь мы не редактируем, только ищем и добавляем к запросу инцидент.
+     *
+     * @param id идентификатор инцидента из строки запроса.
+     * @param model модель с данными об инциденте
+     * @return возврат страницы редактирования
+     */
+    @GetMapping("/update")
+    public String updateAccident(@RequestParam(name = "id") int id, Model model) {
+        model.addAttribute("accident", this.service.getAccidentById(id));
+        return "accident/edit";
+    }
+
 
     /**
      * Редактирование инцидента.
@@ -86,7 +99,7 @@ public class AccidentController {
      */
     @PostMapping("/edit")
     public String saveEditedAccident(@ModelAttribute Accident accident) {
-        this.repository.updateAccident(accident);
+        this.service.updateAccident(accident);
         return "redirect:/";
     }
 }

@@ -39,7 +39,7 @@
                     <c:out value="<td>${accident.text}</td>" escapeXml="false" />
                     <c:out value="<td>${accident.name}</td>" escapeXml="false" />
                     <c:out value="<td>${accident.address}</td>" escapeXml="false" />
-                    <c:set var="editUrl" value="edit/${accident.id}"/>
+                    <c:set var="editUrl" value="update?id=${accident.id}"/>
                     <c:out value="<td>
                                     <a class=\"btn btn-outline-secondary\"
                                     href=\"${editUrl}\">
