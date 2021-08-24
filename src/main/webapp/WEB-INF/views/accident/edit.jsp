@@ -3,6 +3,7 @@
 <html>
 <body>
 <c:set var="accident" value="${requestScope['accident']}" />
+<c:set var="types" value="${requestScope['types']}"/>
 <form action="<c:url value='/edit'/>" method='POST'>
     <table>
         <tr>
@@ -19,6 +20,21 @@
         <tr>
             <td>Место:</td>
             <td><input type='text' value="${accident.address}" name='address'></td>
+        </tr>
+        <tr>
+            <td>Тип нарушения:</td>
+            <td>
+                <select name="type.id">
+                    <c:forEach var="type" items="${types}" >
+                        <option
+                                value="${type.id}"
+                                <c:if test="${type.id == accident.type.id}">
+                                    selected
+                                </c:if>
+                        >${type.name}</option>
+                    </c:forEach>
+                </select>
+            </td>
         </tr>
         <tr>
             <td colspan='2'><input name="submit" type="submit" value="Сохранить" /></td>

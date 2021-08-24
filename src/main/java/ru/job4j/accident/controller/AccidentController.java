@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.accident.entities.Accident;
+import ru.job4j.accident.entities.AccidentType;
 import ru.job4j.accident.service.AccidentService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +31,8 @@ public class AccidentController {
      * @return страница для создания нового инцидента.
      */
     @GetMapping("/create")
-    public String createAccidentPage() {
+    public String createAccidentPage(Model model) {
+        model.addAttribute("types", this.service.possibleTypes());
         return "accident/create";
     }
 
@@ -42,6 +44,9 @@ public class AccidentController {
      */
     @PostMapping("/save")
     public String saveNewAccident(@ModelAttribute Accident accident) {
+        int chosenTypeId = accident.getType().getId();
+        AccidentType chosenType = this.service.getAccidentTypeById(chosenTypeId);
+        accident.getType().setName(chosenType.getName());
         this.service.createNewAccident(accident);
         return "redirect:/";
     }
@@ -73,6 +78,7 @@ public class AccidentController {
     @GetMapping("/update")
     public String updateAccident(@RequestParam(name = "id") int id, Model model) {
         model.addAttribute("accident", this.service.getAccidentById(id));
+        model.addAttribute("types", this.service.possibleTypes());
         return "accident/edit";
     }
 
@@ -99,6 +105,9 @@ public class AccidentController {
      */
     @PostMapping("/edit")
     public String saveEditedAccident(@ModelAttribute Accident accident) {
+        int chosenTypeId = accident.getType().getId();
+        AccidentType chosenType = this.service.getAccidentTypeById(chosenTypeId);
+        accident.getType().setName(chosenType.getName());
         this.service.updateAccident(accident);
         return "redirect:/";
     }

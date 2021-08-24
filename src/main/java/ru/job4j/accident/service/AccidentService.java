@@ -2,6 +2,7 @@ package ru.job4j.accident.service;
 
 import org.springframework.stereotype.Service;
 import ru.job4j.accident.entities.Accident;
+import ru.job4j.accident.entities.AccidentType;
 import ru.job4j.accident.repository.AccidentMemRepository;
 
 import java.util.ArrayList;
@@ -58,5 +59,24 @@ public class AccidentService {
      */
     public void updateAccident(Accident accident) {
         this.repository.updateAccident(accident);
+    }
+
+    /**
+     * Получить все возможные типы инцидентов.
+     *
+     * @return список возможных инцидентов.
+     */
+    public List<AccidentType> possibleTypes() {
+        return this.repository.getAccidentTypes();
+    }
+
+    /**
+     * Получить тип инцидента по его идентификатору.
+     *
+     * @param id идентификатор типа инцидента.
+     * @return тип инцидента.
+     */
+    public AccidentType getAccidentTypeById(int id) {
+        return this.repository.getAccidentTypeById(id);
     }
 }

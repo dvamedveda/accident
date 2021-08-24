@@ -2,6 +2,7 @@ package ru.job4j.accident.repository;
 
 import org.springframework.stereotype.Repository;
 import ru.job4j.accident.entities.Accident;
+import ru.job4j.accident.entities.AccidentType;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -18,41 +19,50 @@ public class AccidentMemRepository {
     private Map<Integer, Accident> store = new HashMap<>();
 
     /**
+     * Хранилище типов инцидентов.
+     */
+    private Map<Integer, AccidentType> types = new HashMap<>();
+
+    /**
      * Счетчик идентификаторов инцидентов.
      */
     private AtomicInteger counter = new AtomicInteger(4);
 
     public AccidentMemRepository() {
+        fillTypes();
         fillDummyAccidents();
+    }
+
+    /**
+     * Заполнить хранилище типов инцидентов.
+     */
+    private void fillTypes() {
+        this.types.put(1, AccidentType.of(1, "Столкновение машины с другой машиной"));
+        this.types.put(2, AccidentType.of(2, "Столкновение машины с пешеходом"));
+        this.types.put(3, AccidentType.of(3, "Столкновение машины с неподвижным объектом"));
+        this.types.put(4, AccidentType.of(4, "Столкновение машины с легким транспортом"));
+        this.types.put(5, AccidentType.of(5, "Столкновение легкого транспорта с другим легким транспортом"));
+        this.types.put(6, AccidentType.of(6, "Столкновение легкого транспорта с пешеходом"));
+        this.types.put(7, AccidentType.of(7, "Столкновение легкого транспорта с неподвижным объектом"));
+        this.types.put(8, AccidentType.of(8, "Легкий транспорт аварийно съехал с дороги"));
+        this.types.put(9, AccidentType.of(9, "Машина аварийно съехала с дороги"));
     }
 
     /**
      * Заполнение хранилища заглушечными инцидентами.
      */
     private void fillDummyAccidents() {
-        Accident accidentOne = new Accident();
-        accidentOne.setId(1);
-        accidentOne.setName("Dummy 1");
-        accidentOne.setText("Dummy text 1");
-        accidentOne.setAddress("Dummy address 1");
+        Accident accidentOne = Accident.of(1, "Dummy 1", "Dummy text 1", "Dummy address 1",
+                this.getAccidentTypeById(2));
         store.put(accidentOne.getId(), accidentOne);
-        Accident accidentTwo = new Accident();
-        accidentTwo.setId(2);
-        accidentTwo.setName("Dummy 2");
-        accidentTwo.setText("Dummy text 2");
-        accidentTwo.setAddress("Dummy address 2");
+        Accident accidentTwo = Accident.of(2, "Dummy 2", "Dummy text 2", "Dummy address 2",
+                this.getAccidentTypeById(4));
         store.put(accidentTwo.getId(), accidentTwo);
-        Accident accidentThree = new Accident();
-        accidentThree.setId(3);
-        accidentThree.setName("Dummy 3");
-        accidentThree.setText("Dummy text 3");
-        accidentThree.setAddress("Dummy address 3");
+        Accident accidentThree = Accident.of(3, "Dummy 3", "Dummy text 3", "Dummy address 3",
+                this.getAccidentTypeById(6));
         store.put(accidentThree.getId(), accidentThree);
-        Accident accidentFour = new Accident();
-        accidentFour.setId(4);
-        accidentFour.setName("Dummy 4");
-        accidentFour.setText("Dummy text 4");
-        accidentFour.setAddress("Dummy address 4");
+        Accident accidentFour = Accident.of(4, "Dummy 4", "Dummy text 4", "Dummy address 4",
+                this.getAccidentTypeById(8));
         store.put(accidentFour.getId(), accidentFour);
     }
 
@@ -97,5 +107,24 @@ public class AccidentMemRepository {
             this.store.remove(accident.getId());
             this.store.put(accident.getId(), accident);
         }
+    }
+
+    /**
+     * Получение типа инцидента по идентификатору.
+     *
+     * @param id идентификатор типа инцидента.
+     * @return тип инцидента.
+     */
+    public AccidentType getAccidentTypeById(int id) {
+        return this.types.get(id);
+    }
+
+    /**
+     * Получить список всех типов инцидентов.
+     *
+     * @return список инцидентов.
+     */
+    public List<AccidentType> getAccidentTypes() {
+        return new ArrayList<>(this.types.values());
     }
 }
