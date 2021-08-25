@@ -52,24 +52,7 @@ public class AccidentController {
     }
 
     /**
-     * Запрос на редактирование инцидента.
-     * Здесь мы не редактируем, только ищем и добавляем к запросу инцидент.
-     *
-     * @param model      модель с данными об инциденте.
-     * @param accidentId идентификатор редактируемого инцидента.
-     * @return форвард на страницу редактирования.
-     */
-    @GetMapping("/edit/{accidentId}")
-    public String attachAndForwardToEdit(Model model, @PathVariable("accidentId") int accidentId) {
-        Accident editAccident = this.service.getAccidentById(accidentId);
-        model.addAttribute("accident", editAccident);
-        return "forward:/edit";
-    }
-
-
-    /**
      * Запрос на редактирование инцидента (через параметр строки http-запроса)
-     * Здесь мы не редактируем, только ищем и добавляем к запросу инцидент.
      *
      * @param id идентификатор инцидента из строки запроса.
      * @param model модель с данными об инциденте
@@ -80,21 +63,6 @@ public class AccidentController {
         model.addAttribute("accident", this.service.getAccidentById(id));
         model.addAttribute("types", this.service.possibleTypes());
         return "accident/edit";
-    }
-
-
-    /**
-     * Редактирование инцидента.
-     *
-     * @param request запрос содержащий инцидент.
-     * @return если в запросе есть инцидент, загружаем страницу редактирования, иначе редиректим на главную.
-     */
-    @GetMapping("/edit")
-    public String editAccidentPage(HttpServletRequest request) {
-        if (request.getAttribute("accident") != null) {
-            return "accident/edit";
-        }
-        return "redirect:/";
     }
 
     /**
