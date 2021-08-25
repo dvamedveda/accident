@@ -49,7 +49,7 @@ public class AccidentService {
      * @return созданный инцидент.
      */
     public Accident createNewAccident(Accident accident) {
-        return this.repository.createAccident(accident);
+        return this.repository.createAccident(this.fillAccidentTypeProperties(accident));
     }
 
     /**
@@ -58,7 +58,7 @@ public class AccidentService {
      * @param accident обновляемый инцидент.
      */
     public void updateAccident(Accident accident) {
-        this.repository.updateAccident(accident);
+        this.repository.updateAccident(this.fillAccidentTypeProperties(accident));
     }
 
     /**
@@ -71,12 +71,15 @@ public class AccidentService {
     }
 
     /**
-     * Получить тип инцидента по его идентификатору.
-     *
-     * @param id идентификатор типа инцидента.
-     * @return тип инцидента.
+     * Заполняем поля выбранного типа инцидента в объекте инцидента.
+     * Так как он приходит со слоя контроллера только с проинициализированным идентификатором.
+     * @param accident принятый объект инцидента.
+     * @return объект инцидента с заполненными полями.
      */
-    public AccidentType getAccidentTypeById(int id) {
-        return this.repository.getAccidentTypeById(id);
+    private Accident fillAccidentTypeProperties(Accident accident) {
+        int chosenTypeId = accident.getType().getId();
+        AccidentType chosenType = this.repository.getAccidentTypeById(chosenTypeId);
+        accident.getType().setName(chosenType.getName());
+        return accident;
     }
 }

@@ -44,9 +44,6 @@ public class AccidentController {
      */
     @PostMapping("/save")
     public String saveNewAccident(@ModelAttribute Accident accident) {
-        int chosenTypeId = accident.getType().getId();
-        AccidentType chosenType = this.service.getAccidentTypeById(chosenTypeId);
-        accident.getType().setName(chosenType.getName());
         this.service.createNewAccident(accident);
         return "redirect:/";
     }
@@ -73,9 +70,6 @@ public class AccidentController {
      */
     @PostMapping("/edit")
     public String saveEditedAccident(@ModelAttribute Accident accident) {
-        int chosenTypeId = accident.getType().getId();
-        AccidentType chosenType = this.service.getAccidentTypeById(chosenTypeId);
-        accident.getType().setName(chosenType.getName());
         this.service.updateAccident(accident);
         return "redirect:/";
     }
