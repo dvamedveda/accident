@@ -53,16 +53,16 @@ public class AccidentMemRepository {
      */
     private void fillDummyAccidents() {
         Accident accidentOne = Accident.of(1, "Dummy 1", "Dummy text 1", "Dummy address 1",
-                this.getAccidentTypeById(2));
+                this.getAccidentTypeById(2), "123", "Dummy photo 1".getBytes());
         store.put(accidentOne.getId(), accidentOne);
         Accident accidentTwo = Accident.of(2, "Dummy 2", "Dummy text 2", "Dummy address 2",
-                this.getAccidentTypeById(4));
+                this.getAccidentTypeById(4), "234", "Dummy photo 2".getBytes());
         store.put(accidentTwo.getId(), accidentTwo);
         Accident accidentThree = Accident.of(3, "Dummy 3", "Dummy text 3", "Dummy address 3",
-                this.getAccidentTypeById(6));
+                this.getAccidentTypeById(6), "345", "Dummy photo 3".getBytes());
         store.put(accidentThree.getId(), accidentThree);
         Accident accidentFour = Accident.of(4, "Dummy 4", "Dummy text 4", "Dummy address 4",
-                this.getAccidentTypeById(8));
+                this.getAccidentTypeById(8), "456", "Dummy photo 4".getBytes());
         store.put(accidentFour.getId(), accidentFour);
     }
 

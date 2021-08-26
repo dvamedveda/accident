@@ -3,11 +3,9 @@ package ru.job4j.accident.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.accident.entities.Accident;
-import ru.job4j.accident.entities.AccidentType;
 import ru.job4j.accident.service.AccidentService;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Один из бинов-контроллеров Spring, автоматически добавляющийся в IoC-контейнер.
@@ -43,8 +41,8 @@ public class AccidentController {
      * @return редирект на главную страницу.
      */
     @PostMapping("/save")
-    public String saveNewAccident(@ModelAttribute Accident accident) {
-        this.service.createNewAccident(accident);
+    public String saveNewAccident(@RequestParam("accidentPhoto") MultipartFile file, @ModelAttribute Accident accident) {
+        this.service.createNewAccident(accident, file);
         return "redirect:/";
     }
 
@@ -69,8 +67,8 @@ public class AccidentController {
      * @return редирект на главную страницу.
      */
     @PostMapping("/edit")
-    public String saveEditedAccident(@ModelAttribute Accident accident) {
-        this.service.updateAccident(accident);
+    public String saveEditedAccident(@RequestParam("accidentPhoto") MultipartFile file, @ModelAttribute Accident accident) {
+        this.service.updateAccident(accident, file);
         return "redirect:/";
     }
 }

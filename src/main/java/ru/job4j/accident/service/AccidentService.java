@@ -1,10 +1,12 @@
 package ru.job4j.accident.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.accident.entities.Accident;
 import ru.job4j.accident.entities.AccidentType;
 import ru.job4j.accident.repository.AccidentMemRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,10 @@ public class AccidentService {
      * @param accident создаваемый инцидент.
      * @return созданный инцидент.
      */
-    public Accident createNewAccident(Accident accident) {
+    public Accident createNewAccident(Accident accident, MultipartFile file) {
+        accident.setPhoto(file.getSize() > 0 ? this.getPhotoBytes(file) : null);
+        accident.setEncodedPhoto(file.getSize() > 0
+                ? Accident.toBase64(this.getPhotoBytes(file)) : Accident.toBase64(null));
         return this.repository.createAccident(this.fillAccidentTypeProperties(accident));
     }
 
@@ -57,7 +62,11 @@ public class AccidentService {
      *
      * @param accident обновляемый инцидент.
      */
-    public void updateAccident(Accident accident) {
+    public void updateAccident(Accident accident, MultipartFile file) {
+        byte[] currentPhoto = this.repository.getById(accident.getId()).getPhoto();
+        accident.setPhoto(file.getSize() > 0 ? this.getPhotoBytes(file) : currentPhoto);
+        accident.setEncodedPhoto(file.getSize() > 0
+                ? Accident.toBase64(this.getPhotoBytes(file)) : Accident.toBase64(currentPhoto));
         this.repository.updateAccident(this.fillAccidentTypeProperties(accident));
     }
 
@@ -81,5 +90,20 @@ public class AccidentService {
         AccidentType chosenType = this.repository.getAccidentTypeById(chosenTypeId);
         accident.getType().setName(chosenType.getName());
         return accident;
+    }
+
+    /**
+     * Получение данных фото из загруженного файла.
+     * @param file загруженный файл.
+     * @return массив байт данных из фото.
+     */
+    private byte[] getPhotoBytes(MultipartFile file) {
+        byte[] result = null;
+        try {
+            result = file.getBytes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

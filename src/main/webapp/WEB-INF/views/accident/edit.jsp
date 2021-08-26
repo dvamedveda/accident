@@ -4,7 +4,7 @@
 <body>
 <c:set var="accident" value="${requestScope['accident']}" />
 <c:set var="types" value="${requestScope['types']}"/>
-<form action="<c:url value='/edit'/>" method='POST'>
+<form action="<c:url value='/edit'/>" method='POST' enctype="multipart/form-data">
     <table>
         <tr>
             <td><input type='text' hidden value="${accident.id}" name='id'></td>
@@ -20,6 +20,21 @@
         <tr>
             <td>Место:</td>
             <td><input type='text' value="${accident.address}" name='address'></td>
+        </tr>
+        <tr>
+            <td>Номер машины:</td>
+            <td><input type='text' value="${accident.carNumber}" name='carNumber'></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <c:if test="${accident.encodedPhoto != ''}">
+                    <img src="data:image/jpeg;base64,${accident.encodedPhoto}" width="300" height="200" />
+                </c:if>
+            </td>
+        </tr>
+        <tr>
+            <td>Фото инцидента:</td>
+            <td><input type='file' name='accidentPhoto'></td>
         </tr>
         <tr>
             <td>Тип нарушения:</td>

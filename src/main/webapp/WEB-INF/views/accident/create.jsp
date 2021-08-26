@@ -3,7 +3,7 @@
 <html>
 <body>
 <c:set var="types" value="${requestScope['types']}"/>
-<form  action="<c:url value='/save'/>" method='POST'>
+<form  action="<c:url value='/save'/>" method='POST' enctype="multipart/form-data">
     <table>
         <tr>
             <td>Сообщивший:</td>
@@ -16,6 +16,14 @@
         <tr>
             <td>Место:</td>
             <td><input type='text' name='address'></td>
+        </tr>
+        <tr>
+            <td>Номер машины:</td>
+            <td><input type='text' name='carNumber'></td>
+        </tr>
+        <tr>
+            <td>Фото инцидента:</td>
+            <td><input type='file' name='accidentPhoto'></td>
         </tr>
         <tr>
             <td>Тип нарушения:</td>
