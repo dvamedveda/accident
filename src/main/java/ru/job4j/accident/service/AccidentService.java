@@ -4,11 +4,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.accident.entities.Accident;
 import ru.job4j.accident.entities.AccidentType;
+import ru.job4j.accident.entities.Rule;
 import ru.job4j.accident.repository.AccidentMemRepository;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Сервис для работы с инцидентами.
@@ -50,10 +50,11 @@ public class AccidentService {
      * @param accident создаваемый инцидент.
      * @return созданный инцидент.
      */
-    public Accident createNewAccident(Accident accident, MultipartFile file) {
+    public Accident createNewAccident(Accident accident, MultipartFile file, String[] ruleIds) {
         accident.setPhoto(file.getSize() > 0 ? this.getPhotoBytes(file) : null);
         accident.setEncodedPhoto(file.getSize() > 0
                 ? Accident.toBase64(this.getPhotoBytes(file)) : Accident.toBase64(null));
+        this.fillAccidentRules(accident, ruleIds);
         return this.repository.createAccident(this.fillAccidentTypeProperties(accident));
     }
 
@@ -62,11 +63,12 @@ public class AccidentService {
      *
      * @param accident обновляемый инцидент.
      */
-    public void updateAccident(Accident accident, MultipartFile file) {
+    public void updateAccident(Accident accident, MultipartFile file, String[] ruleIds) {
         byte[] currentPhoto = this.repository.getById(accident.getId()).getPhoto();
         accident.setPhoto(file.getSize() > 0 ? this.getPhotoBytes(file) : currentPhoto);
         accident.setEncodedPhoto(file.getSize() > 0
                 ? Accident.toBase64(this.getPhotoBytes(file)) : Accident.toBase64(currentPhoto));
+        this.fillAccidentRules(accident, ruleIds);
         this.repository.updateAccident(this.fillAccidentTypeProperties(accident));
     }
 
@@ -105,5 +107,31 @@ public class AccidentService {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * Получение всех статей из репозитория.
+     * @return множество всех статей.
+     */
+    public Set<Rule> getAllRules() {
+        return this.repository.getAllRules();
+    }
+
+    /**
+     * Получить объект статьи по ее индентификатору.
+     * @param id идентификатор статьи.
+     * @return объект статьи.
+     */
+    public Rule getRuleById(int id) {
+        return this.repository.getRuleById(id);
+    }
+
+    /**
+     * Заполнение списка статей инцидента на основе переданного списка идентификаторов статей.
+     * @param accident инцидент, в котором требуется заполнить статьи.
+     * @param ids переданный список статей.
+     */
+    private void fillAccidentRules(Accident accident, String[] ids) {
+        Arrays.stream(ids).map(Integer::parseInt).map(this::getRuleById).forEach(accident::addRule);
     }
 }

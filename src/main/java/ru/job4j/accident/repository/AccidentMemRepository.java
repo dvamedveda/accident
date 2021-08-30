@@ -3,6 +3,7 @@ package ru.job4j.accident.repository;
 import org.springframework.stereotype.Repository;
 import ru.job4j.accident.entities.Accident;
 import ru.job4j.accident.entities.AccidentType;
+import ru.job4j.accident.entities.Rule;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,6 +25,11 @@ public class AccidentMemRepository {
     private Map<Integer, AccidentType> types = new HashMap<>();
 
     /**
+     * Хранилище статей для инцидентов.
+     */
+    private Map<Integer, Rule> rules = new HashMap<>();
+
+    /**
      * Счетчик идентификаторов инцидентов.
      */
     private AtomicInteger counter = new AtomicInteger(4);
@@ -31,6 +37,7 @@ public class AccidentMemRepository {
     public AccidentMemRepository() {
         fillTypes();
         fillDummyAccidents();
+        fillRuleSet();
     }
 
     /**
@@ -64,6 +71,18 @@ public class AccidentMemRepository {
         Accident accidentFour = Accident.of(4, "Dummy 4", "Dummy text 4", "Dummy address 4",
                 this.getAccidentTypeById(8), "456", "Dummy photo 4".getBytes());
         store.put(accidentFour.getId(), accidentFour);
+    }
+
+    /**
+     * Заполнение хранилища статей некими значениями.
+     */
+    private void fillRuleSet() {
+        this.rules.put(1, Rule.of(1, "Статья 1 Дорожного Кодекса РФ"));
+        this.rules.put(2, Rule.of(2, "Статья 2 Дорожного Кодекса РФ"));
+        this.rules.put(3, Rule.of(3, "Статья 3 Дорожного Кодекса РФ"));
+        this.rules.put(4, Rule.of(4, "Статья 1 Уголовного Кодекса РФ"));
+        this.rules.put(5, Rule.of(5, "Статья 2 Уголовного Кодекса РФ"));
+        this.rules.put(6, Rule.of(6, "Статья 3 Уголовного Кодекса РФ"));
     }
 
     /**
@@ -126,5 +145,22 @@ public class AccidentMemRepository {
      */
     public List<AccidentType> getAccidentTypes() {
         return new ArrayList<>(this.types.values());
+    }
+
+    /**
+     * Получить объект статьи по идентификатору.
+     * @param id идентификатор статьи.
+     * @return объект статьи.
+     */
+    public Rule getRuleById(int id) {
+        return this.rules.get(id);
+    }
+
+    /**
+     * Получить все возможные статьи нарушений.
+     * @return множество всех статей.
+     */
+    public Set<Rule> getAllRules() {
+        return new HashSet<Rule>(this.rules.values());
     }
 }

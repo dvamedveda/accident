@@ -4,7 +4,9 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Модель данных для сущности Инцидент.
@@ -20,6 +22,7 @@ public class Accident {
     private String carNumber;
     private byte[] photo;
     private String encodedPhoto;
+    private final Set<Rule> rules = new HashSet<>();
 
     public static Accident of(int id, String name, String text,
                               String address, AccidentType type,
@@ -98,6 +101,14 @@ public class Accident {
 
     public void setEncodedPhoto(String encodedPhoto) {
         this.encodedPhoto = encodedPhoto;
+    }
+
+    public Set<Rule> getRules() {
+        return this.rules;
+    }
+
+    public void addRule(Rule rule) {
+        this.rules.add(rule);
     }
 
     @Override

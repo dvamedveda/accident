@@ -3,6 +3,7 @@
 <html>
 <body>
 <c:set var="types" value="${requestScope['types']}"/>
+<c:set var="rules" value="${requestScope['rules']}"/>
 <form  action="<c:url value='/save'/>" method='POST' enctype="multipart/form-data">
     <table>
         <tr>
@@ -31,6 +32,16 @@
                 <select name="type.id">
                     <c:forEach var="type" items="${types}" >
                         <option value="${type.id}">${type.name}</option>
+                    </c:forEach>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Статьи:</td>
+            <td>
+                <select name="rIds" multiple>
+                    <c:forEach var="rule" items="${rules}" >
+                        <option value="${rule.id}">${rule.name}</option>
                     </c:forEach>
                 </select>
             </td>

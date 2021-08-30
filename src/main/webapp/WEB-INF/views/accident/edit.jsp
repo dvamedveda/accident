@@ -4,6 +4,7 @@
 <body>
 <c:set var="accident" value="${requestScope['accident']}" />
 <c:set var="types" value="${requestScope['types']}"/>
+<c:set var="rules" value="${requestScope['rules']}"/>
 <form action="<c:url value='/edit'/>" method='POST' enctype="multipart/form-data">
     <table>
         <tr>
@@ -47,6 +48,22 @@
                                     selected
                                 </c:if>
                         >${type.name}</option>
+                    </c:forEach>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Статьи:</td>
+            <td>
+                <select name="rIds" multiple>
+                    <c:forEach var="rule" items="${rules}" >
+                        <option
+                                value="${rule.id}"
+                                <c:if test="${accident.rules.contains(rule)}">
+                                    selected
+                                </c:if>
+                        >${rule.name}
+                        </option>
                     </c:forEach>
                 </select>
             </td>
