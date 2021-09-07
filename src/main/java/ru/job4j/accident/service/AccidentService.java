@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.accident.entities.Accident;
 import ru.job4j.accident.entities.AccidentType;
 import ru.job4j.accident.entities.Rule;
-import ru.job4j.accident.repository.AccidentMemRepository;
+import ru.job4j.accident.repository.AccidentJdbcRepository;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,9 +19,9 @@ public class AccidentService {
     /**
      * Хранилище инцидентов.
      */
-    private AccidentMemRepository repository;
+    private AccidentJdbcRepository repository;
 
-    public AccidentService(AccidentMemRepository repository) {
+    public AccidentService(AccidentJdbcRepository repository) {
         this.repository = repository;
     }
 

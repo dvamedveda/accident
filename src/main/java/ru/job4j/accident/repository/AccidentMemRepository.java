@@ -10,9 +10,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Хранилище инцидентов, использующее для хранения память.
+ * {@inheritDoc}
  */
 @Repository
-public class AccidentMemRepository {
+public class AccidentMemRepository implements AccidentRepository {
 
     /**
      * Хранилище инцидентов.
@@ -85,42 +86,20 @@ public class AccidentMemRepository {
         this.rules.put(6, Rule.of(6, "Статья 3 Уголовного Кодекса РФ"));
     }
 
-    /**
-     * Получение коллекции всех инцидентов.
-     *
-     * @return коллекция всех инцидентов.
-     */
     public Collection<Accident> getAllAccidents() {
         return store.values();
     }
 
-    /**
-     * Создание нового инцидента в хранилище.
-     *
-     * @param accident объект нового инцидента.
-     * @return сохраненный инцидент.
-     */
     public Accident createAccident(Accident accident) {
         accident.setId(this.counter.incrementAndGet());
         this.store.put(accident.getId(), accident);
         return accident;
     }
 
-    /**
-     * Получение инцидента по его идентификатору.
-     *
-     * @param id идентификатор инцидента.
-     * @return объект инцидента.
-     */
     public Accident getById(int id) {
         return this.store.get(id);
     }
 
-    /**
-     * Обновление существующего инцидента.
-     *
-     * @param accident объект инцидента.
-     */
     public void updateAccident(Accident accident) {
         if (this.store.containsKey(accident.getId())) {
             this.store.remove(accident.getId());
@@ -128,38 +107,18 @@ public class AccidentMemRepository {
         }
     }
 
-    /**
-     * Получение типа инцидента по идентификатору.
-     *
-     * @param id идентификатор типа инцидента.
-     * @return тип инцидента.
-     */
     public AccidentType getAccidentTypeById(int id) {
         return this.types.get(id);
     }
 
-    /**
-     * Получить список всех типов инцидентов.
-     *
-     * @return список инцидентов.
-     */
     public List<AccidentType> getAccidentTypes() {
         return new ArrayList<>(this.types.values());
     }
 
-    /**
-     * Получить объект статьи по идентификатору.
-     * @param id идентификатор статьи.
-     * @return объект статьи.
-     */
     public Rule getRuleById(int id) {
         return this.rules.get(id);
     }
 
-    /**
-     * Получить все возможные статьи нарушений.
-     * @return множество всех статей.
-     */
     public Set<Rule> getAllRules() {
         return new HashSet<Rule>(this.rules.values());
     }
