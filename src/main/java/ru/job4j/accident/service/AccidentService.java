@@ -1,6 +1,7 @@
 package ru.job4j.accident.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.accident.entities.Accident;
 import ru.job4j.accident.entities.AccidentType;
@@ -14,6 +15,7 @@ import java.util.*;
  * Сервис для работы с инцидентами.
  */
 @Service
+@Transactional
 public class AccidentService {
 
     /**

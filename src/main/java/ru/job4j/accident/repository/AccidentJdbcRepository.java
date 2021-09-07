@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.job4j.accident.entities.Accident;
 import ru.job4j.accident.entities.AccidentType;
 import ru.job4j.accident.entities.Rule;
@@ -21,7 +20,6 @@ import java.util.Set;
  * {@inheritDoc}
  */
 @Repository
-@Transactional
 public class AccidentJdbcRepository implements AccidentRepository {
 
     private final JdbcTemplate jdbc;
