@@ -1,12 +1,20 @@
 package ru.job4j.accident.entities;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
  * Модель данных для сущности Статья.
  */
+@Entity
+@Table(name = "rules")
 public class Rule {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column
     private String name;
 
     public static Rule of(int id, String name) {
@@ -14,6 +22,9 @@ public class Rule {
         rule.id = id;
         rule.name = name;
         return rule;
+    }
+
+    public Rule() {
     }
 
     public int getId() {

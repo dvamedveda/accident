@@ -19,7 +19,7 @@ import java.util.Set;
 /**
  * {@inheritDoc}
  */
-@Repository
+//@Repository
 public class AccidentJdbcRepository implements AccidentRepository {
 
     private final JdbcTemplate jdbc;

@@ -3,26 +3,49 @@ package ru.job4j.accident.entities;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.Base64;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * Модель данных для сущности Инцидент.
  */
 @Component
 @Scope("prototype")
+@Entity
+@Table(name = "accidents")
 public class Accident {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column
     private String name;
+
+    @Column
     private String text;
+
+    @Column
     private String address;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "type")
     private AccidentType type;
+
+    @Column(name = "car_number")
     private String carNumber;
+
+    @Column
     private byte[] photo;
+
+    @Column(name = "encoded_photo")
     private String encodedPhoto;
-    private final Set<Rule> rules = new HashSet<>();
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "accident_rules",
+            joinColumns = {@JoinColumn(name = "accident_id")},
+            inverseJoinColumns = {@JoinColumn(name = "rule_id")})
+    private Set<Rule> rules = new HashSet<>();
 
     public static Accident of(int id, String name, String text,
                               String address, AccidentType type,
@@ -37,6 +60,9 @@ public class Accident {
         accident.photo = photo;
         accident.encodedPhoto = Accident.toBase64(photo);
         return accident;
+    }
+
+    public Accident() {
     }
 
     public int getId() {
@@ -105,6 +131,10 @@ public class Accident {
 
     public Set<Rule> getRules() {
         return this.rules;
+    }
+
+    public void setRules(Set<Rule> rules) {
+        this.rules = rules;
     }
 
     public void addRule(Rule rule) {

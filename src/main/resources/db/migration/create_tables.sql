@@ -46,11 +46,10 @@ create table accidents
     encoded_photo text
 );
 
--- Создание промежуточной таблицы для отношения accident one-to-many rules
+-- Создание промежуточной таблицы для отношения accident many-to-many rules
 create table accident_rules
 (
-    id       serial primary key,
-    accident integer references accidents (id) not null,
-    rule     integer references rules (id)     not null,
-    constraint unique_accident_rule_pair unique (accident, rule)
+    id serial primary key,
+    accident_id integer references accidents (id),
+    rule_id     integer references rules (id)
 );

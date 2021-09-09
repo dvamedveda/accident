@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.accident.entities.Accident;
 import ru.job4j.accident.entities.AccidentType;
 import ru.job4j.accident.entities.Rule;
-import ru.job4j.accident.repository.AccidentJdbcRepository;
+import ru.job4j.accident.repository.AccidentHibernateRepository;
 
 import java.io.IOException;
 import java.util.*;
@@ -15,15 +15,15 @@ import java.util.*;
  * Сервис для работы с инцидентами.
  */
 @Service
-@Transactional
+@Transactional(transactionManager = "hibernateTxManager")
 public class AccidentService {
 
     /**
      * Хранилище инцидентов.
      */
-    private AccidentJdbcRepository repository;
+    private AccidentHibernateRepository repository;
 
-    public AccidentService(AccidentJdbcRepository repository) {
+    public AccidentService(AccidentHibernateRepository repository) {
         this.repository = repository;
     }
 
@@ -57,7 +57,8 @@ public class AccidentService {
         accident.setEncodedPhoto(file.getSize() > 0
                 ? Accident.toBase64(this.getPhotoBytes(file)) : Accident.toBase64(null));
         this.fillAccidentRules(accident, ruleIds);
-        return this.repository.createAccident(this.fillAccidentTypeProperties(accident));
+        this.fillAccidentTypeProperties(accident);
+        return this.repository.createAccident(accident);
     }
 
     /**
