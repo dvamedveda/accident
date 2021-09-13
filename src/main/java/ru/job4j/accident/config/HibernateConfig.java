@@ -15,11 +15,26 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+/**
+ * Конфигурация Hibernate и TransactionManager.
+ * Первый используется для работы с базой данных.
+ * Второй управляет транзакциями на основе аннотаций.
+ * Параметры подключения считываются из конфига resources/db.properties.
+ */
 @Configuration
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 @PropertySource("classpath:db.properties")
 public class HibernateConfig {
 
+    /**
+     * Создание источника данных (на основе пула Apache DBCP)
+     *
+     * @param driver   драйвер для подключения к бд.
+     * @param url      адрес расположения бд.
+     * @param username пользователь.
+     * @param password пароль.
+     * @return источник данных для получения подключения к бд.
+     */
     @Bean
     public DataSource dataSource(
             @Value("${jdbc.driver}") String driver,
@@ -35,6 +50,12 @@ public class HibernateConfig {
         return dataSource;
     }
 
+    /**
+     * Получение объекта SessionFactory для выполнения операций с сущностями.
+     * @param dialect диалект базы данных.
+     * @param dataSource подключение к базе данных.
+     * @return объект фабрики сессий.
+     */
     @Bean
     public LocalSessionFactoryBean sessionFactory(@Value("${hibernate.dialect}") String dialect, DataSource dataSource) {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
@@ -50,6 +71,11 @@ public class HibernateConfig {
         return sessionFactory;
     }
 
+    /**
+     * Получение менеджера транзакций Hibernate.
+     * @param sessionFactory фабрика сессий Hibernate.
+     * @return менеджер транзакций.
+     */
     @Bean
     @Qualifier(value = "hibernateTxManager")
     public PlatformTransactionManager hibernateTxManager(SessionFactory sessionFactory) {

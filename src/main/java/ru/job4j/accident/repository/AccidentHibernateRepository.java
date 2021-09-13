@@ -9,6 +9,9 @@ import ru.job4j.accident.entities.Rule;
 
 import java.util.*;
 
+/**
+ * {@inheritDoc}
+ */
 @Repository
 public class AccidentHibernateRepository implements AccidentRepository {
 
@@ -20,74 +23,63 @@ public class AccidentHibernateRepository implements AccidentRepository {
 
     @Override
     public Collection<Accident> getAllAccidents() {
-        try (Session session = this.sessionFactory.openSession()) {
-            return session.createQuery("from Accident a", Accident.class).list();
-        }
+        Session session = this.sessionFactory.getCurrentSession();
+        return session.createQuery("from Accident a", Accident.class).list();
+
     }
 
     @Override
     public Accident createAccident(Accident accident) {
-        try (Session session = this.sessionFactory.openSession()) {
-            session.save(accident);
-            return accident;
-        }
+        Session session = this.sessionFactory.getCurrentSession();
+        session.save(accident);
+        return accident;
     }
 
     @Override
     public Accident getById(int id) {
-        try (Session session = this.sessionFactory.openSession()) {
-            return session
+        Session session = this.sessionFactory.getCurrentSession();
+        return session
                     .createQuery("select distinct a from Accident a "
                             + "join fetch a.rules "
                             + "join fetch a.type "
                             + "where a.id = :id", Accident.class)
                     .setParameter("id", id)
                     .uniqueResult();
-        }
     }
 
     @Override
     public void updateAccident(Accident accident) {
-        try (Session session = this.sessionFactory.openSession()) {
-            session.update(accident);
-        }
+        Session session = this.sessionFactory.getCurrentSession();
+        session.merge(accident);
     }
 
     @Override
     public AccidentType getAccidentTypeById(int id) {
-        AccidentType result;
-        try (Session session = this.sessionFactory.openSession()) {
-            result = session
-                    .createQuery("from AccidentType t where t.id = :id order by t.id asc", AccidentType.class)
-                    .setParameter("id", id)
-                    .uniqueResult();
-        }
-        return result;
+        Session session = this.sessionFactory.getCurrentSession();
+        return session
+                .createQuery("from AccidentType t where t.id = :id order by t.id asc", AccidentType.class)
+                .setParameter("id", id)
+                .uniqueResult();
     }
 
     @Override
     public List<AccidentType> getAccidentTypes() {
-        try (Session session = this.sessionFactory.openSession()) {
-            return session.createQuery("select t from AccidentType t order by t.id asc", AccidentType.class).getResultList();
-        }
+        Session session = this.sessionFactory.getCurrentSession();
+        return session.createQuery("select t from AccidentType t order by t.id asc", AccidentType.class).getResultList();
     }
 
     @Override
     public Rule getRuleById(int id) {
-        Rule result;
-        try (Session session = this.sessionFactory.openSession()) {
-            result = session
+        Session session = this.sessionFactory.getCurrentSession();
+            return session
                     .createQuery("from Rule r where r.id = :id order by r.id asc", Rule.class)
                     .setParameter("id", id)
                     .uniqueResult();
-        }
-        return result;
     }
 
     @Override
     public Set<Rule> getAllRules() {
-        try (Session session = this.sessionFactory.openSession()) {
-            return new HashSet<>(session.createQuery("from Rule r order by r.id asc", Rule.class).getResultList());
-        }
+        Session session = this.sessionFactory.getCurrentSession();
+        return new HashSet<>(session.createQuery("from Rule r order by r.id asc", Rule.class).getResultList());
     }
 }

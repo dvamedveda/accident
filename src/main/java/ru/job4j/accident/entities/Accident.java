@@ -28,7 +28,7 @@ public class Accident {
     @Column
     private String address;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "type")
     private AccidentType type;
 
@@ -41,10 +41,10 @@ public class Accident {
     @Column(name = "encoded_photo")
     private String encodedPhoto;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "accident_rules",
-            joinColumns = {@JoinColumn(name = "accident_id")},
-            inverseJoinColumns = {@JoinColumn(name = "rule_id")})
+            joinColumns = {@JoinColumn(name = "accident")},
+            inverseJoinColumns = {@JoinColumn(name = "rule")})
     private Set<Rule> rules = new HashSet<>();
 
     public static Accident of(int id, String name, String text,

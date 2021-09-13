@@ -50,6 +50,6 @@ create table accidents
 create table accident_rules
 (
     id serial primary key,
-    accident_id integer references accidents (id),
-    rule_id     integer references rules (id)
+    accident integer references accidents (id),
+    rule     integer references rules (id)
 );
