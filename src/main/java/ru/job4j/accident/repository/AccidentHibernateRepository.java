@@ -12,7 +12,7 @@ import java.util.*;
 /**
  * {@inheritDoc}
  */
-@Repository
+//@Repository
 public class AccidentHibernateRepository implements AccidentRepository {
 
     private final SessionFactory sessionFactory;
@@ -39,12 +39,12 @@ public class AccidentHibernateRepository implements AccidentRepository {
     public Accident getById(int id) {
         Session session = this.sessionFactory.getCurrentSession();
         return session
-                    .createQuery("select distinct a from Accident a "
-                            + "join fetch a.rules "
-                            + "join fetch a.type "
-                            + "where a.id = :id", Accident.class)
-                    .setParameter("id", id)
-                    .uniqueResult();
+                .createQuery("select distinct a from Accident a "
+                        + "join fetch a.rules "
+                        + "join fetch a.type "
+                        + "where a.id = :id", Accident.class)
+                .setParameter("id", id)
+                .uniqueResult();
     }
 
     @Override
@@ -71,10 +71,10 @@ public class AccidentHibernateRepository implements AccidentRepository {
     @Override
     public Rule getRuleById(int id) {
         Session session = this.sessionFactory.getCurrentSession();
-            return session
-                    .createQuery("from Rule r where r.id = :id order by r.id asc", Rule.class)
-                    .setParameter("id", id)
-                    .uniqueResult();
+        return session
+                .createQuery("from Rule r where r.id = :id order by r.id asc", Rule.class)
+                .setParameter("id", id)
+                .uniqueResult();
     }
 
     @Override

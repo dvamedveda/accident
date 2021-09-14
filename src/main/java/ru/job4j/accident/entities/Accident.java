@@ -1,5 +1,6 @@
 package ru.job4j.accident.entities;
 
+import org.hibernate.annotations.Type;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +21,15 @@ public class Accident {
     private int id;
 
     @Column
+    @Type(type = "text")
     private String name;
 
     @Column
+    @Type(type = "text")
     private String text;
 
     @Column
+    @Type(type = "text")
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,12 +37,14 @@ public class Accident {
     private AccidentType type;
 
     @Column(name = "car_number")
+    @Type(type = "text")
     private String carNumber;
 
     @Column
     private byte[] photo;
 
     @Column(name = "encoded_photo")
+    @Type(type = "text")
     private String encodedPhoto;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)

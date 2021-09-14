@@ -6,25 +6,43 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.accident.entities.Accident;
 import ru.job4j.accident.entities.AccidentType;
 import ru.job4j.accident.entities.Rule;
-import ru.job4j.accident.repository.AccidentHibernateRepository;
+import ru.job4j.accident.repository.AccidentJpaRepository;
+import ru.job4j.accident.repository.AccidentTypeJpaRepository;
+import ru.job4j.accident.repository.RuleJpaRepository;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Сервис для работы с инцидентами.
  */
 @Service
-@Transactional(transactionManager = "hibernateTxManager")
+@Transactional(transactionManager = "jpaTxManager")
 public class AccidentService {
 
     /**
      * Хранилище инцидентов.
      */
-    private AccidentHibernateRepository repository;
+    private AccidentJpaRepository accidents;
 
-    public AccidentService(AccidentHibernateRepository repository) {
-        this.repository = repository;
+    /**
+     * Хранилище типов инцидентов.
+     */
+    private AccidentTypeJpaRepository types;
+
+    /**
+     * Хранилище статей.
+     */
+    private RuleJpaRepository rules;
+
+    public AccidentService(AccidentJpaRepository accidents,
+                           AccidentTypeJpaRepository types,
+                           RuleJpaRepository rules) {
+        this.accidents = accidents;
+        this.types = types;
+        this.rules = rules;
     }
 
     /**
@@ -33,7 +51,7 @@ public class AccidentService {
      * @return список всех инцидентов.
      */
     public List<Accident> getAllAccident() {
-        return new ArrayList<>(this.repository.getAllAccidents());
+        return StreamSupport.stream(this.accidents.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
     /**
@@ -43,7 +61,7 @@ public class AccidentService {
      * @return объект инцидента.
      */
     public Accident getAccidentById(int id) {
-        return this.repository.getById(id);
+        return this.accidents.findById(id).orElse(null);
     }
 
     /**
@@ -58,7 +76,7 @@ public class AccidentService {
                 ? Accident.toBase64(this.getPhotoBytes(file)) : Accident.toBase64(null));
         this.fillAccidentRules(accident, ruleIds);
         this.fillAccidentTypeProperties(accident);
-        return this.repository.createAccident(accident);
+        return this.accidents.save(accident);
     }
 
     /**
@@ -67,12 +85,13 @@ public class AccidentService {
      * @param accident обновляемый инцидент.
      */
     public void updateAccident(Accident accident, MultipartFile file, String[] ruleIds) {
-        byte[] currentPhoto = this.repository.getById(accident.getId()).getPhoto();
+        byte[] currentPhoto = this.accidents.findById(accident.getId()).orElse(null).getPhoto();
         accident.setPhoto(file.getSize() > 0 ? this.getPhotoBytes(file) : currentPhoto);
         accident.setEncodedPhoto(file.getSize() > 0
                 ? Accident.toBase64(this.getPhotoBytes(file)) : Accident.toBase64(currentPhoto));
         this.fillAccidentRules(accident, ruleIds);
-        this.repository.updateAccident(this.fillAccidentTypeProperties(accident));
+        this.fillAccidentTypeProperties(accident);
+        this.accidents.save(accident);
     }
 
     /**
@@ -81,24 +100,26 @@ public class AccidentService {
      * @return список возможных инцидентов.
      */
     public List<AccidentType> possibleTypes() {
-        return this.repository.getAccidentTypes();
+        return StreamSupport.stream(this.types.findAll().spliterator(), false).collect(Collectors.toList());
     }
 
     /**
      * Заполняем поля выбранного типа инцидента в объекте инцидента.
      * Так как он приходит со слоя контроллера только с проинициализированным идентификатором.
+     *
      * @param accident принятый объект инцидента.
      * @return объект инцидента с заполненными полями.
      */
     private Accident fillAccidentTypeProperties(Accident accident) {
         int chosenTypeId = accident.getType().getId();
-        AccidentType chosenType = this.repository.getAccidentTypeById(chosenTypeId);
+        AccidentType chosenType = this.types.findById(chosenTypeId).orElse(null);
         accident.getType().setName(chosenType.getName());
         return accident;
     }
 
     /**
      * Получение данных фото из загруженного файла.
+     *
      * @param file загруженный файл.
      * @return массив байт данных из фото.
      */
@@ -114,25 +135,28 @@ public class AccidentService {
 
     /**
      * Получение всех статей из репозитория.
+     *
      * @return множество всех статей.
      */
     public Set<Rule> getAllRules() {
-        return this.repository.getAllRules();
+        return StreamSupport.stream(this.rules.findAll().spliterator(), false).collect(Collectors.toSet());
     }
 
     /**
      * Получить объект статьи по ее индентификатору.
+     *
      * @param id идентификатор статьи.
      * @return объект статьи.
      */
     public Rule getRuleById(int id) {
-        return this.repository.getRuleById(id);
+        return this.rules.findById(id).orElse(null);
     }
 
     /**
      * Заполнение списка статей инцидента на основе переданного списка идентификаторов статей.
+     *
      * @param accident инцидент, в котором требуется заполнить статьи.
-     * @param ids переданный список статей.
+     * @param ids      переданный список статей.
      */
     private void fillAccidentRules(Accident accident, String[] ids) {
         Arrays.stream(ids).map(Integer::parseInt).map(this::getRuleById).forEach(accident::addRule);

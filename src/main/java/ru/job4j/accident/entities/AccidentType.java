@@ -1,5 +1,7 @@
 package ru.job4j.accident.entities;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -14,6 +16,7 @@ public class AccidentType {
     private int id;
 
     @Column
+    @Type(type = "text")
     private String name;
 
     public static AccidentType of(int id, String name) {
