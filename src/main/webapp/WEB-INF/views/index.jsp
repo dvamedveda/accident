@@ -21,7 +21,10 @@
         <h3 class="text-center">
             Hello : Accident
         </h3>
-        <a class="btn btn-primary" href="<c:url value='/create'/>">Добавить инцидент</a>
+        <div class="d-flex justify-content-between">
+            <a class="btn btn-primary" href="<c:url value='/create'/>">Добавить инцидент</a>
+            <a class="btn btn-primary" href="<c:url value='/logout'/>">Выйти</a>
+        </div>
         <table class="table table-sm table-striped">
             <thead>
                 <tr>
