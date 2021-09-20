@@ -23,7 +23,10 @@
         </h3>
         <div class="d-flex justify-content-between">
             <a class="btn btn-primary" href="<c:url value='/create'/>">Добавить инцидент</a>
-            <a class="btn btn-primary" href="<c:url value='/logout'/>">Выйти</a>
+            <div class="d-flex justify-content-end">
+                <button type="button" class="btn btn-outline-success mx-2">Вы вошли как: ${requestScope['user'].username}</button>
+                <a class="btn btn-primary" href="<c:url value='/logout'/>">Выйти</a>
+            </div>
         </div>
         <table class="table table-sm table-striped">
             <thead>

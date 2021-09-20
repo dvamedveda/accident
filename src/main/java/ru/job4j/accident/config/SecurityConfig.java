@@ -7,8 +7,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import javax.sql.DataSource;
 
 /**
  * Конфигурация SpringSecurity для приложения.
@@ -21,29 +24,44 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * Кодировщик паролей.
      */
     @Autowired
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
+    /**
+     * Объект для подключения к базе данных.
+     */
+    @Autowired
+    private DataSource dataSource;
+
+    /**
+     * Шифровщик/дешифровщик паролей.
+     * @return объект PasswordEncoder.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     /**
-     * Конфигурация хранилища пользователей.
+     * Конфигурация хранилища пользователей и аутентификации.
      * @param auth билдер хранилища.
      * @throws Exception исключения при работе метода.
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .passwordEncoder(passwordEncoder)
-                .withUser("user").password(passwordEncoder.encode("123456")).roles("USER")
-                .and()
-                .withUser("admin").password(passwordEncoder.encode("123456")).roles("USER", "ADMIN");
+        auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder)
+//                .withUser(User.withUsername("user")
+//                        .password(passwordEncoder.encode("12345"))
+//                        .roles("USER"))
+//                .withUser(User.withUsername("admin")
+//                        .password(passwordEncoder.encode("54321"))
+//                        .roles("ADMIN"));
+                .usersByUsernameQuery("select username, password, enabled from users where username = ?")
+                .authoritiesByUsernameQuery("select username, authority from authorities where username = ?");
     }
 
     /**
-     * Конфигурация доступа к ресурсам приложения, настройка страницы входа, перенапаравление при входе/выходе в приложении.
+     * Конфигурация доступа к ресурсам приложения(авторизация),
+     * настройка страницы входа, перенапаравление при входе/выходе в приложении.
      * @param http объект конфигурации обработки запросов.
      * @throws Exception исключения при работе метода.
      */
@@ -56,6 +74,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().logout().logoutSuccessUrl("/login?logout=true").invalidateHttpSession(true).permitAll()
                 .and().csrf().disable();
     }
-
-
 }

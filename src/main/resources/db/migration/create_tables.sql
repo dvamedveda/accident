@@ -53,3 +53,20 @@ create table accident_rules
     accident integer references accidents (id),
     rule     integer references rules (id)
 );
+
+-- Создание таблицы пользователей приложения
+create table users
+(
+    username varchar(50) not null,
+    password text not null,
+    enabled boolean default true,
+    primary key (username)
+);
+
+-- Создание таблицы разрешений для пользователей приложения.
+create table authorities
+(
+    username varchar(50) not null,
+    authority varchar(50) not null,
+    foreign key (username) references users(username)
+);
