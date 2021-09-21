@@ -21,12 +21,14 @@ public class LoginController {
      * Вход пользователя в приложение.
      * @param error сообщение об ошибке логина.
      * @param logout сообщение о логауте.
+     * @param register сообщение об успешной регистрации.
      * @param model модель с данными для страницы.
      * @return вид для входа в приложение.
      */
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "logout", required = false) String logout,
+                            @RequestParam(value = "register", required = false) String register,
                             Model model) {
         String message = null;
         if (error != null) {
@@ -34,6 +36,9 @@ public class LoginController {
         }
         if (logout != null) {
             message = "You have been logged out";
+        }
+        if (register != null) {
+            message = "Registration complete. Use saved data for login";
         }
         model.addAttribute("message", message);
         return "login";

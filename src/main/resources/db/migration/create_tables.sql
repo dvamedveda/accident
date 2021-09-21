@@ -54,19 +54,28 @@ create table accident_rules
     rule     integer references rules (id)
 );
 
--- Создание таблицы пользователей приложения
-create table users
-(
-    username varchar(50) not null,
-    password text not null,
-    enabled boolean default true,
-    primary key (username)
-);
-
 -- Создание таблицы разрешений для пользователей приложения.
 create table authorities
 (
-    username varchar(50) not null,
-    authority varchar(50) not null,
-    foreign key (username) references users(username)
+    id serial primary key,
+    authority varchar(50) not null unique
 );
+
+-- Создание таблицы пользователей приложения
+create table users
+(
+    id serial primary key,
+    username varchar(50) not null unique,
+    password text not null,
+    enabled boolean default true,
+    authority_id int not null references authorities(id)
+);
+
+-- Заполнение таблицы начальным набором ролей.
+insert into authorities(authority)
+values ('ROLE_USER'), ('ROLE_ADMIN');
+
+-- Создание дефолтного юзера в приложении.
+insert into users (username, password, enabled, authority_id)
+values ('root', '$2a$10$tvhNNL23MiuONVB9qjkH7uff0YhhkUGG7IAQ.5Egu2fPApxyihJdS', true,
+        (select id from authorities where authority = 'ROLE_ADMIN'));

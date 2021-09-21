@@ -3,12 +3,7 @@
 <%@ page isELIgnored="false" %>
 <html>
 <body>
-<c:if test="${not empty requestScope['message']}">
-    <div style="color:red; font-weight: bold; margin: 30px 0px;">
-            ${requestScope['message']}
-    </div>
-</c:if>
-<form name='login' action="<c:url value='/login'/>" method='POST'>
+<form name='login' action="<c:url value='/register'/>" method='POST'>
     <table>
         <tr>
             <td>UserName:</td>
@@ -22,8 +17,6 @@
             <td colspan='2'><input name="submit" type="submit" value="submit" /></td>
         </tr>
     </table>
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 </form>
-<a class="btn btn-primary" href="<c:url value='register'/>" role="button">Регистрация</a>
 </body>
 </html>

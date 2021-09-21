@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -49,14 +48,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder)
-//                .withUser(User.withUsername("user")
-//                        .password(passwordEncoder.encode("12345"))
-//                        .roles("USER"))
-//                .withUser(User.withUsername("admin")
-//                        .password(passwordEncoder.encode("54321"))
-//                        .roles("ADMIN"));
                 .usersByUsernameQuery("select username, password, enabled from users where username = ?")
-                .authoritiesByUsernameQuery("select username, authority from authorities where username = ?");
+                .authoritiesByUsernameQuery(
+                        "select u.username, a.authority "
+                                + "from users u "
+                                + "join authorities a on u.authority_id = a.id "
+                                + "where username = ?");
     }
 
     /**
@@ -68,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/login", "/register").permitAll()
                 .antMatchers("/**").hasAnyRole("USER", "ADMIN")
                 .and().formLogin().loginPage("/login").defaultSuccessUrl("/").failureUrl("/login?error=true").permitAll()
                 .and().logout().logoutSuccessUrl("/login?logout=true").invalidateHttpSession(true).permitAll()
