@@ -1,6 +1,7 @@
 package ru.job4j.accident.controller;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,6 +15,8 @@ import ru.job4j.accident.service.UserService;
  */
 @Controller
 public class RegistrationController {
+
+    private final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
 
     /**
      * Сервис для работы с пользователями.
@@ -32,11 +35,12 @@ public class RegistrationController {
      */
     @PostMapping("/register")
     public String save(@ModelAttribute User user) {
-        String result = "true";
+        String result = "false";
         try {
             userService.createUser(user);
+            result = "true";
         } catch (UserAlreadyExistsException e) {
-            result = "false";
+            logger.warn("Try register already existed user.");
         }
         return "redirect:/login?register=" + result;
     }
