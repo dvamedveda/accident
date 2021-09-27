@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.job4j.accident.entities.User;
+import ru.job4j.accident.exceptions.UserAlreadyExistsException;
 import ru.job4j.accident.service.UserService;
 
 /**
@@ -15,17 +16,11 @@ import ru.job4j.accident.service.UserService;
 public class RegistrationController {
 
     /**
-     * Кодировщик паролей.
-     */
-    private final PasswordEncoder encoder;
-
-    /**
      * Сервис для работы с пользователями.
      */
     private final UserService userService;
 
-    public RegistrationController(PasswordEncoder encoder, UserService userService) {
-        this.encoder = encoder;
+    public RegistrationController(UserService userService) {
         this.userService = userService;
     }
 
@@ -37,11 +32,13 @@ public class RegistrationController {
      */
     @PostMapping("/register")
     public String save(@ModelAttribute User user) {
-        user.setEnabled(true);
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setAuthority(userService.getDefaultAuthority());
-        userService.createUser(user);
-        return "redirect:/login?register=true";
+        String result = "true";
+        try {
+            userService.createUser(user);
+        } catch (UserAlreadyExistsException e) {
+            result = "false";
+        }
+        return "redirect:/login?register=" + result;
     }
 
     /**

@@ -38,7 +38,9 @@ public class LoginController {
             message = "You have been logged out";
         }
         if (register != null) {
-            message = "Registration complete. Use saved data for login";
+            message = register.equals("true")
+                    ? "Registration complete. Use saved data for login"
+                    : "User with name already exists";
         }
         model.addAttribute("message", message);
         return "login";
